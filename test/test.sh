@@ -27,16 +27,6 @@ rm -fr auto2
 rm -fr auto3
 rm -fr auto4
 
-echo "TESTING: doubledash"
-mkdir -- -testdir
-touch -- -testdir/ttt
-cp -- /bin/bash -testdir/.
-./doubledash.exp
-rm -fr -- -testdir
-
-echo "TESTING: extract command (extract_command.exp)"
-./extract_command.exp
-
 echo "TESTING: chroot overlay (option_chroot_overlay.exp)"
 ./option_chroot_overlay.exp
 
@@ -53,8 +43,6 @@ sleep 5
 rm -f tmpreadonly
 
 
-echo "TESTING: output (output.exp)"
-./output.exp
 
 echo "TESTING: private directory (private_dir.exp)"
 rm -fr dirprivate
@@ -73,9 +61,6 @@ echo "TESTING: overlayfs (fs_overlay.exp)"
 
 echo "TESTING: login SSH (login_ssh.exp)"
 ./login_ssh.exp
-
-echo "TESTING: DNS (dns.exp)"
-./dns.exp
 
 echo "TESTING: firemon --arp (firemon-arp.exp)"
 ./firemon-arp.exp

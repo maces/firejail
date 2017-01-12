@@ -31,21 +31,40 @@
 static char *devloop = NULL;	// device file 
 static char *mntdir = NULL;	// mount point in /tmp directory
 
-void appimage_set(const char *appimage_path) {
-	assert(appimage_path);
+void appimage_set(const char *appimage) {
+	assert(appimage);
 	assert(devloop == NULL);	// don't call this twice!
 	EUID_ASSERT();
 	
-	// check appimage_path
-	if (access(appimage_path, R_OK) == -1) {
+#ifdef LOOP_CTL_GET_FREE	// test for older kernels; this definition is found in /usr/include/linux/loop.h
+	// check appimage file
+	invalid_filename(appimage);
+	if (access(appimage, R_OK) == -1) {
 		fprintf(stderr, "Error: cannot access AppImage file\n");
 		exit(1);
 	}
-	
-	EUID_ROOT();
-	
+
+	// get appimage type and ELF size
+	// a value of 0 means we are dealing with a type1 appimage
+	long unsigned int size = appimage2_size(appimage);
+	if (arg_debug)
+		printf("AppImage ELF size %lu\n", size);
+
+	// open appimage file
+	/* coverity[toctou] */
+	int ffd = open(appimage, O_RDONLY|O_CLOEXEC);
+	if (ffd == -1) {
+		fprintf(stderr, "Error: cannot open AppImage file\n");
+		exit(1);
+	}
+
 	// find or allocate a free loop device to use
+	EUID_ROOT();
 	int cfd = open("/dev/loop-control", O_RDWR);
+	if (cfd == -1) {
+		fprintf(stderr, "Error: /dev/loop-control interface is not supported by your kernel\n");
+		exit(1);
+	}
 	int devnr = ioctl(cfd, LOOP_CTL_GET_FREE);
 	if (devnr == -1) {
 		fprintf(stderr, "Error: cannot allocate a new loopback device\n");
@@ -55,65 +74,111 @@ void appimage_set(const char *appimage_path) {
 	if (asprintf(&devloop, "/dev/loop%d", devnr) == -1)
 		errExit("asprintf");
 		
-	int ffd = open(appimage_path, O_RDONLY|O_CLOEXEC);
 	int lfd = open(devloop, O_RDONLY);
+	if (lfd == -1) {
+		fprintf(stderr, "Error: cannot open %s\n", devloop);
+		exit(1);
+	}
 	if (ioctl(lfd, LOOP_SET_FD, ffd) == -1) {
 		fprintf(stderr, "Error: cannot configure the loopback device\n");
 		exit(1);
 	}
+	
+	if (size) {
+		struct loop_info64 info;
+		memset(&info, 0, sizeof(struct loop_info64));
+		info.lo_offset = size;
+		if (ioctl(lfd,  LOOP_SET_STATUS64, &info) == -1)
+			errExit("configure appimage offset");
+	}
+	
 	close(lfd);
 	close(ffd);
-	
-	char dirname[] = "/tmp/firejail-mnt-XXXXXX";
-	mntdir =  strdup(mkdtemp(dirname));
-	if (mntdir == NULL) {
-		fprintf(stderr, "Error: cannot create temporary directory\n");
-		exit(1);
-	}
-	mkdir(mntdir, 755);
-	if (chown(mntdir, getuid(), getgid()) == -1)
-		errExit("chown");
-	if (chmod(mntdir, 755) == -1)
-		errExit("chmod");
-	
-	char *mode;
-	if (asprintf(&mode, "mode=755,uid=%d,gid=%d", getuid(), getgid()) == -1)
+	EUID_USER();
+
+	// creates appimage mount point perms 0700
+	if (asprintf(&mntdir, "%s/.appimage-%u",  RUN_FIREJAIL_APPIMAGE_DIR, getpid()) == -1)
 		errExit("asprintf");
-
-	if (mount(devloop, mntdir, "iso9660",MS_MGC_VAL|MS_RDONLY,  mode) < 0)
-		errExit("mounting appimage");
-
+	EUID_ROOT();
+	mkdir_attr(mntdir, 0700, getuid(), getgid());
+	EUID_USER();
+	
+	// mount
+	char *mode;
+	if (asprintf(&mode, "mode=700,uid=%d,gid=%d", getuid(), getgid()) == -1)
+		errExit("asprintf");
+	EUID_ROOT();
+	
+	if (size == 0) {
+		if (mount(devloop, mntdir, "iso9660",MS_MGC_VAL|MS_RDONLY,  mode) < 0)
+			errExit("mounting appimage");
+	}
+	else {
+		if (mount(devloop, mntdir, "squashfs",MS_MGC_VAL|MS_RDONLY,  mode) < 0)
+			errExit("mounting appimage");
+	}
 
 	if (arg_debug)
 		printf("appimage mounted on %s\n", mntdir);
 	EUID_USER();
-	
+
+	// set environment
+	if (setenv("APPIMAGE", appimage, 1) < 0)
+		errExit("setenv");
+	if (mntdir && setenv("APPDIR", mntdir, 1) < 0)
+		errExit("setenv");
+
 	// build new command line
 	if (asprintf(&cfg.command_line, "%s/AppRun", mntdir) == -1)
 		errExit("asprintf");
 	
 	free(mode);
+#ifdef HAVE_GCOV
+	__gcov_flush();
+#endif
+#else
+	fprintf(stderr, "Error: /dev/loop-control interface is not supported by your kernel\n");
+	exit(1);
+#endif
 }
 
 void appimage_clear(void) {
 	int rv;
 
+	EUID_ROOT();
 	if (mntdir) {
-		rv = umount2(mntdir, MNT_FORCE);
-		if (rv == -1 && errno == EBUSY) {
-			sleep(1);			
+		int i;
+		int rv = 0;
+		for (i = 0; i < 5; i++) {
 			rv = umount2(mntdir, MNT_FORCE);
-			(void) rv;
+			if (rv == 0)
+				break;
+			if (rv == -1 && errno == EBUSY) {
+				if (!arg_quiet)
+					printf("Warning: EBUSY error trying to unmount %s\n", mntdir);			
+				sleep(2);
+				continue;
+			}
 			
+			// rv = -1
+			if (!arg_quiet) {
+				printf("Warning: error trying to unmount %s\n", mntdir);
+				perror("umount");
+			}
 		}
-		rmdir(mntdir);
-		free(mntdir);
+		
+		if (rv == 0) {
+			rmdir(mntdir);
+			free(mntdir);
+		}
 	}
 
 	if (devloop) {
 		int lfd = open(devloop, O_RDONLY);
-		rv = ioctl(lfd, LOOP_CLR_FD, 0);
-		(void) rv;
-		close(lfd);
+		if (lfd != -1) {
+			rv = ioctl(lfd, LOOP_CLR_FD, 0);
+			(void) rv;
+			close(lfd);
+		}
 	}
 }

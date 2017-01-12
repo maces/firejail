@@ -14,11 +14,8 @@ seccomp
 tracelog
 
 whitelist ${DOWNLOADS}
-mkdir ~/.mozilla
 mkdir ~/.mozilla/seamonkey
 whitelist ~/.mozilla/seamonkey
-mkdir ~/.cache
-mkdir ~/.cache/mozilla
 mkdir ~/.cache/mozilla/seamonkey
 whitelist ~/.cache/mozilla/seamonkey
 whitelist ~/dwhelper
@@ -34,10 +31,11 @@ whitelist ~/.cache/gnome-mplayer/plugin
 whitelist ~/.pki
 include /etc/firejail/whitelist-common.inc
 
-# lastpass, keepassx
-whitelist ~/.keepassx
-whitelist ~/.config/keepassx
-whitelist ~/keepassx.kdbx
+# lastpass, keepass
+# for keepass we additionally need to whitelist our .kdbx password database
+whitelist ~/.keepass
+whitelist ~/.config/keepass
+whitelist ~/.config/KeePass
 whitelist ~/.lastpass
 whitelist ~/.config/lastpass
 

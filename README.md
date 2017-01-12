@@ -18,7 +18,7 @@ prefix your command with “firejail”:
 
 `````
 $ firejail firefox            # starting Mozilla Firefox
-$ firejail transmission-gtk   # starting Transmission BitTorrent 
+$ firejail transmission-gtk   # starting Transmission BitTorrent
 $ firejail vlc                # starting VideoLAN Client
 $ sudo firejail /etc/init.d/nginx start
 `````
@@ -31,40 +31,72 @@ Features: https://firejail.wordpress.com/features-3/
 Documentation: https://firejail.wordpress.com/documentation-2/
 
 FAQ: https://firejail.wordpress.com/support/frequently-asked-questions/
+
+`````
+
+`````
+## User submitted profile repositories
+
+If you keep your Firejail profiles in a public repository, please give us a link:
+
+* https://github.com/chiraag-nataraj/firejail-profiles
+
+* https://github.com/triceratops1/fe
+
+Use this issue to request new profiles: https://github.com/netblue30/firejail/issues/825
 `````
 
 `````
-# Current development version: 0.9.41
-
-## AppImage
-
-AppImage (http://appimage.org/) is a distribution-agnostic packaging format.
-The package is a regular ISO file containing all binaries, libraries and resources
-necessary for the program to run.
-
-We introduce in this release support for sandboxing AppImage applications. Example:
+# Current development version: 0.9.45
 `````
-$ firejail --appimage krita-3.0-x86_64.appimage
-`````
-All Firejail sandboxing options should be available. A private home directory:
-`````
-$ firejail --appimage --private krita-3.0-x86_64.appimage
-`````
-or some basic X11 sandboxing:
-`````
-$ firejail --appimage --net=none --x11 krita-3.0-x86_64.appimage
-`````
-Major software applications distributing AppImage packages:
 
-* Krita: https://krita.org/download/krita-desktop/
-* OpenShot: http://www.openshot.org/download/
-* Scribus: https://www.scribus.net/downloads/unstable-branch/
-* MuseScore: https://musescore.org/en/download
+`````
+## AppImage type 2 support
+`````
 
-More packages build by AppImage developer Simon Peter: https://bintray.com/probono/AppImages
+`````
+## New command line options
+`````
+      --private-opt=file,directory
+              Build  a  new /opt in a temporary filesystem, and copy the files
+              and directories in the list.  If no listed file is  found,  /opt
+              directory  will  be empty.  All modifications are discarded when
+              the sandbox is closed.
 
-AppImage project home: https://github.com/probonopd/AppImageKit
+              Example:
+              $ firejail --private-opt=firefox /opt/firefox/firefox
 
-## New security profiles
+       --private-srv=file,directory
+              Build a new /srv in a temporary filesystem, and copy  the  files
+              and  directories  in the list.  If no listed file is found, /srv
+              directory will be empty.  All modifications are  discarded  when
+              the sandbox is closed.
 
-Gitter, gThumb, mpv
+              Example:
+              # firejail --private-srv=www /etc/init.d/apache2 start
+
+       --machine-id
+              Preserve  id  number  in  /etc/machine-id file. By default a new
+              random id is generated inside the sandbox.
+
+              Example:
+              $ firejail --machine-id
+
+       --allow-private-blacklist
+              Allow  blacklisting  files in private home directory. By default
+              these blacklists are disabled.
+
+              Example:
+              $   firejail    --allow-private-blacklist   --private=~/priv-dir
+              --blacklist=~/.mozilla
+             
+`````
+## New Profiles
+xiphos, Tor Browser Bundle, display (imagemagik), Wire, mumble, zoom, Guayadeque, qemu, keypass2,
+amarok, ark, atool, bleachbit, brasero, dolphin, dragon, elinks, enchant, exiftool, file-roller, gedit,
+gjs, gnome-books, gnome-clocks, gnome-documents, gnome-maps, gnome-music, gnome-photos, gnome-weather,
+goobox, gpa, gpg, gpg-agent, highlight, img2txt, k3b, kate, lynx, mediainfo, nautilus, odt2txt, pdftotext,
+simple-scan, skanlite, ssh-agent, tracker, transmission-cli, transmission-show, w3m, xfburn, xpra, wget,
+xed, pluma, Cryptocat, Bless, Gnome 2048, Gnome Calculator, Gnome Contacts, JD-GUI, Lollypop, MultiMC5,
+PDFSam, Pithos, Xonotic, wireshark, keepassx2, QupZilla, FossaMail
+

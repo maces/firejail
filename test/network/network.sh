@@ -6,6 +6,23 @@
 export MALLOC_CHECK_=3
 export MALLOC_PERTURB_=$(($RANDOM % 255 + 1))
 
+sudo ./configure
+
+echo "TESTING: firemon interface (firemon-interfaces.exp)"
+sudo ./firemon-interfaces.exp
+
+echo "TESTING: print dns (dns-print.exp)"
+./dns-print.exp
+
+echo "TESTING: firemon arp (firemon-arp.exp)"
+./firemon-arp.exp
+
+echo "TESTING: firemon netstats (netstats.exp)"
+./netstats.exp
+
+echo "TESTING: firemon route (firemon-route.exp)"
+./firemon-route.exp
+
 echo "TESTING: network profile (net_profile.exp)"
 ./net_profile.exp
 
@@ -52,8 +69,29 @@ echo "TESTING: network default gateway test 2 (net_defaultgw2.exp)"
 echo "TESTING: network default gateway test 3 (net_defaultgw3.exp)"
 ./net_defaultgw3.exp
 
+echo "TESTING: scan (net_scan.exp)"
+./net_scan.exp
+
+echo "TESTING: mtu (mtu.exp)"
+./mtu.exp
+
+echo "TESTING: interface (interface.exp)"
+./interface.exp
+
+echo "TESTING: veth (net_veth.exp)"
+./net_veth.exp
+
 echo "TESTING: netfilter (net_netfilter.exp)"
 ./net_netfilter.exp
+
+echo "TESTING: iprange (iprange.exp)"
+./iprange.exp
+
+echo "TESTING: veth-name (veth-name.exp)"
+./veth-name.exp
+
+echo "TESTING: macvlan2 (net_macvlan2.exp)"
+./net_macvlan2.exp
 
 echo "TESTING: 4 bridges ARP (4bridges_arp.exp)"
 ./4bridges_arp.exp

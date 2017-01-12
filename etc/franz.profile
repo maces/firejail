@@ -6,18 +6,16 @@ include /etc/firejail/disable-programs.inc
 include /etc/firejail/disable-devel.inc
 
 caps.drop all
-seccomp
-protocol unix,inet,inet6,netlink
 netfilter
-#tracelog
 nonewprivs
 noroot
+protocol unix,inet,inet6,netlink
+seccomp
+#tracelog
 
 whitelist ${DOWNLOADS}
-mkdir ~/.config
 mkdir ~/.config/Franz
 whitelist ~/.config/Franz
-mkdir ~/.cache
 mkdir ~/.cache/Franz
 whitelist ~/.cache/Franz
 mkdir ~/.pki

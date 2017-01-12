@@ -1,7 +1,112 @@
-firejail (0.9.41) baseline; urgency=low
-  * work in progress...
-  * new profiles: Gitter, gThumb, mpv
- -- netblue30 <netblue30@yahoo.com>  Tue, 31 May 2016 08:00:00 -0500
+firejail (0.9.45) baseline; urgency=low
+  * development version, work in progress
+  * Gentoo compile patch
+  * security: --bandwidth root shell found by Martin Carpenter (CVE-2017-5207)
+  * security: disabled --allow-debuggers when running on kernel
+    versions prior to 4.8; a kernel bug in ptrace system call
+    allows a full bypass of seccomp filter; problem reported by Lizzie Dixon
+    (CVE-2017-5206)
+  * security: overwrite /etc/resolv.conf found by Martin Carpenter (CVE-2016-10118)
+  * security: TOCTOU exploit for --get and --put found by Daniel Hodson
+  * security: invalid environment exploit found by Martin Carpenter (CVE-2016-10122)
+  * security: split most of networking code in a separate executable
+  * security: split seccomp filter code configuration in a separate executable
+  * security: split file copying in private option in a separate executable
+  * security: root exploit found by Sebastian Krahmer (CVE-2017-5180)
+  * feature: disable gnupg and systemd directories under /run/user
+  * feature: allow root user access to /dev/shm (--noblacklist=/dev/shm)
+  * feature: AppImage type 2 support
+  * feature: test coverage (gcov) support
+  * feature: private /opt directory (--private-opt, profile support)
+  * feature: private /srv directory (--private-srv, profile support)
+  * feature: spoof machine-id
+  * feature: config support for firejail prompt in terminals
+  * feature: pass command line arguments to appimages
+  * feature: --allow-private-blacklist option
+  * feature: allow non-seccomp setup for OverlayFS sandboxes
+  * feature: added a number o Python scripts for handling sandboxes
+  * new profiles: xiphos, Tor Browser Bundle, display (imagemagik), Wire,
+  * new profiles: mumble, zoom, Guayadeque, qemu, keypass2, xed, pluma,
+  * new profiles: Cryptocat, Bless, Gnome 2048, Gnome Calculator,
+  * new profiles: Gnome Contacts, JD-GUI, Lollypop, MultiMC5, PDFSam, Pithos,
+  * new profies: Xonotic, wireshark, keepassx2, QupZilla, FossaMail
+  * bugfixes
+ -- netblue30 <netblue30@yahoo.com>  Sun, 23 Oct 2016 08:00:00 -0500
+
+firejail (0.9.44) baseline; urgency=low
+  * CVE-2016-9016 submitted by Aleksey Manevich
+  * modifs: removed man firejail-config
+  * modifs: --private-tmp whitelists /tmp/.X11-unix directory
+  * modifs: Nvidia drivers added to --private-dev
+  * modifs: /srv supported by --whitelist
+  * feature: allow user access to /sys/fs (--noblacklist=/sys/fs)
+  * feature: support starting/joining sandbox is a single command
+    (--join-or-start)
+  * feature: X11 detection support for --audit
+  * feature: assign a name to the interface connected to the bridge
+    (--veth-name)
+  * feature: all user home directories are visible (--allusers)
+  * feature: add files to sandbox container (--put)
+  * feature: blocking x11 (--x11=block)
+  * feature: X11 security extension (--x11=xorg)
+  * feature: disable 3D hardware acceleration (--no3d)
+  * feature: x11 xpra, x11 xephyr, x11 block, allusers, no3d profile commands
+  * feature: move files in sandbox (--put)
+  * feature: accept wildcard patterns in user  name field of restricted
+    shell login feature
+  * new profiles: qpdfview, mupdf, Luminance HDR, Synfig Studio, Gimp, Inkscape
+  * new profiles: feh, ranger, zathura, 7z, keepass, keepassx,
+  * new profiles: claws-mail, mutt, git, emacs, vim, xpdf, VirtualBox, OpenShot
+  * new profiles: Flowblade, Eye of GNOME (eog), Evolution
+  * bugfixes
+ -- netblue30 <netblue30@yahoo.com>  Fri, 21 Oct 2016 08:00:00 -0500
+
+firejail (0.9.42) baseline; urgency=low
+  * security: --whitelist deleted files, submitted by Vasya Novikov
+  * security: disable x32 ABI in seccomp, submitted by Jann Horn
+  * security: tighten --chroot, submitted by Jann Horn
+  * security: terminal sandbox escape, submitted by Stephan Sokolow
+  * security: several TOCTOU fixes submitted by Aleksey Manevich
+  * modifs: bringing back --private-home option
+  * modifs: deprecated --user option, please use "sudo -u username firejail"
+  * modifs: allow symlinks in home directory for --whitelist option
+  * modifs: Firejail prompt is enabled by env variable FIREJAIL_PROMPT="yes"
+  * modifs: recursive mkdir
+  * modifs: include /dev/snd in --private-dev
+  * modifs: seccomp filter update
+  * modifs: release archives moved to .xz format
+  * feature: AppImage support (--appimage)
+  * feature: AppArmor support (--apparmor)
+  * feature: Ubuntu snap support (/etc/firejail/snap.profile)
+  * feature: Sandbox auditing support (--audit)
+  * feature: remove environment variable (--rmenv)
+  * feature: noexec support (--noexec)
+  * feature: clean local overlay storage directory (--overlay-clean)
+  * feature: store and reuse overlay (--overlay-named)
+  * feature: allow debugging inside the sandbox with gdb and strace
+         (--allow-debuggers)
+  * feature: mkfile profile command
+  * feature: quiet profile command
+  * feature: x11 profile command
+  * feature: option to fix desktop files (firecfg --fix)
+  * compile time: Busybox support (--enable-busybox-workaround)
+  * compile time: disable overlayfs (--disable-overlayfs)
+  * compile time: disable whitlisting (--disable-whitelist)
+  * compile time: disable global config (--disable-globalcfg)
+  * run time: enable/disable overlayfs (overlayfs yes/no)
+  * run time: enable/disable  quiet as default (quiet-by-default yes/no)
+  * run time: user-defined network filter (netfilter-default)
+  * run time: enable/disable whitelisting (whitelist yes/no)
+  * run time: enable/disable remounting of /proc and /sys
+          (remount-proc-sys yes/no)
+  * run time: enable/disable chroot desktop features (chroot-desktop yes/no)
+  * profiles: Gitter, gThumb, mpv, Franz messenger, LibreOffice
+  * profiles: pix, audacity, xz, xzdec, gzip, cpio, less
+  * profiles: Atom Beta, Atom, jitsi, eom, uudeview
+  * profiles: tar (gtar), unzip, unrar, file, skypeforlinux,
+  * profiles: inox, Slack, gnome-chess. Gajim IM client, DOSBox
+  * bugfixes
+ -- netblue30 <netblue30@yahoo.com>  Thu, 8 Sept 2016 08:00:00 -0500
 
 firejail (0.9.40) baseline; urgency=low
   * added --nice option
@@ -46,11 +151,12 @@ firejail (0.9.38) baseline; urgency=low
   * added KMail, Seamonkey, Telegram, Mathematica, uGet,
   *   and mupen64plus profiles
   * --chroot in user mode allowed only if seccomp support is available
-  *   in current Linux kernel
+  *   in current Linux kernel (CVE-2016-10123)
   * deprecated --private-home feature
   * the first protocol list installed takes precedence
-  * --tmpfs option allowed only running as root
+  * --tmpfs option allowed only running as root (CVE-2016-10117)
   * added --private-tmp option
+  * weak permissions (CVE-2016-10119, CVE-2016-10120, CVE-2016-10121)
   * bugfixes
  -- netblue30 <netblue30@yahoo.com>  Tue, 2 Feb 2016 10:00:00 -0500
 
@@ -171,7 +277,7 @@ firejail (0.9.24) baseline; urgency=low
   * two build patches from Reiner Herman (tickets 11, 12)
   * man page patch from Reiner Herman (ticket 13)
   * output patch (ticket 15) from sshirokov
-  
+
  -- netblue30 <netblue30@yahoo.com>  Sun, 5 Apr 2015 08:00:00 -0500
 
 firejail (0.9.22) baseline; urgency=low
@@ -236,7 +342,7 @@ firejail (0.9.16) baseline; urgency=low
  -- netblue30 <netblue30@yahoo.com>  Tue, 4 Nov 2014 10:00:00 -0500
 
 firejail (0.9.14) baseline; urgency=low
-  * Linux capabilities and seccomp filters are automatically enabled in 
+  * Linux capabilities and seccomp filters are automatically enabled in
     chroot mode (--chroot option) if the sandbox is started as regular user
   * Added support for user defined seccomp blacklists
   * Added syscall trace support
@@ -288,7 +394,7 @@ firejail (0.9.8.1) baseline; urgency=low
   * FIxed a number of bugs introduced in 0.9.8
 
  -- netblue30 <netblue30@yahoo.com>  Fri, 25 Jul 2014 07:25:00 -0500
-  
+
 firejail (0.9.8) baseline; urgency=low
   * Implemented nowrap mode for firejail --list command option
   * Added --top option in both firejail and firemon
@@ -297,7 +403,7 @@ firejail (0.9.8) baseline; urgency=low
   * bugfixes
 
  -- netblue30 <netblue30@yahoo.com>  Tue, 24 Jul 2014 08:51:00 -0500
-  
+
 firejail (0.9.6) baseline; urgency=low
 
   * Mounting tmpfs on top of /var/log, required by several server programs
@@ -336,7 +442,7 @@ firejail (0.9.2) baseline; urgency=low
   * Added an expect-based testing framework for the project
   * Added bash completion support
   * Added support for multiple networks
-  
+
  -- netblue30 <netblue30@yahoo.com>  Fri, 25 Apr 2014 08:00:00 -0500
 
 firejail (0.9) baseline; urgency=low

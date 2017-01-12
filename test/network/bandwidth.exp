@@ -12,13 +12,13 @@ expect {
 	timeout {puts "TESTING ERROR 0\n";exit}
 	"Child process initialized"
 }
-sleep 2
+sleep 1
 
 spawn $env(SHELL)
 send -- "firejail --bandwidth=test status\r"
 expect {
 	timeout {puts "TESTING ERROR 1\n";exit}
-	"qdisc noqueue 0: dev eth0"
+	"qdisc * 0: dev eth0"
 }
 sleep 1
 
@@ -60,6 +60,6 @@ expect {
 	"rate 80Kbit burst 10Kb" {puts "TESTING ERROR 9\n";exit}
 	"done"
 }
-sleep 1
+after 100
 
 puts "\nall done\n"

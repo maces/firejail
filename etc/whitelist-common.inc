@@ -1,3 +1,6 @@
+# Local customizations come here
+include /etc/firejail/whitelist-common.local
+
 # common whitelist for all profiles
 
 whitelist ~/.XCompose
@@ -14,16 +17,25 @@ whitelist ~/.fonts.d
 whitelist ~/.fontconfig
 whitelist ~/.fonts.conf
 whitelist ~/.fonts.conf.d
+whitelist ~/.local/share/fonts
 whitelist ~/.config/fontconfig
 whitelist ~/.cache/fontconfig
 
 # gtk
 whitelist ~/.gtkrc
 whitelist ~/.gtkrc-2.0
+whitelist ~/.config/gtk-2.0
 whitelist ~/.config/gtk-3.0
 whitelist ~/.themes
+whitelist ~/.kde/share/config/gtkrc
+whitelist ~/.kde/share/config/gtkrc-2.0
 
 # dconf
-mkdir ~/.config
 mkdir ~/.config/dconf
 whitelist ~/.config/dconf
+
+# qt/kde
+whitelist ~/.config/kdeglobals
+whitelist ~/.kde/share/config/oxygenrc
+whitelist ~/.kde/share/config/kdeglobals
+whitelist ~/.kde/share/icons

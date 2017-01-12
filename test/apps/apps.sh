@@ -60,6 +60,33 @@ else
 	echo "TESTING SKIP: transmission-qt not found"
 fi
 
+which qbittorrent
+if [ "$?" -eq 0 ];
+then
+	echo "TESTING: qbittorrent"
+	./qbittorrent.exp
+else
+	echo "TESTING SKIP: qbittorrent not found"
+fi
+
+which uget-gtk
+if [ "$?" -eq 0 ];
+then
+	echo "TESTING: uget"
+	./uget-gtk.exp
+else
+	echo "TESTING SKIP: uget-gtk not found"
+fi
+
+which filezilla
+if [ "$?" -eq 0 ];
+then
+	echo "TESTING: filezilla"
+	./filezilla.exp
+else
+	echo "TESTING SKIP: filezilla not found"
+fi
+
 which evince
 if [ "$?" -eq 0 ];
 then
@@ -67,6 +94,16 @@ then
 	./evince.exp
 else
 	echo "TESTING SKIP: evince not found"
+fi
+
+
+which gthumb
+if [ "$?" -eq 0 ];
+then
+	echo "TESTING: gthumb"
+	./gthumb.exp
+else
+	echo "TESTING SKIP: gthumb not found"
 fi
 
 which icedove
@@ -130,15 +167,6 @@ then
 	./hexchat.exp
 else
 	echo "TESTING SKIP: hexchat not found"
-fi
-
-which weechat-curses
-if [ "$?" -eq 0 ];
-then
-	echo "TESTING: weechat"
-	./weechat.exp
-else
-	echo "TESTING SKIP: weechat not found"
 fi
 
 which wine

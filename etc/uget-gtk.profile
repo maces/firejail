@@ -9,11 +9,16 @@ caps.drop all
 netfilter
 nonewprivs
 noroot
+nosound
 protocol unix,inet,inet6
 seccomp
+shell none
+
+private-bin uget-gtk
+private-dev
+private-tmp
 
 whitelist ${DOWNLOADS}
-mkdir ~/.config
 mkdir ~/.config/uGet
 whitelist ~/.config/uGet
 include /etc/firejail/whitelist-common.inc

@@ -1,3 +1,4 @@
+# xviewer profile
 noblacklist ~/.config/xviewer
 
 include /etc/firejail/disable-common.inc
@@ -6,9 +7,15 @@ include /etc/firejail/disable-devel.inc
 include /etc/firejail/disable-passwdmgr.inc
 
 caps.drop all
-netfilter
-noroot
+nogroups
 nonewprivs
-protocol unix,inet,inet6
+noroot
+nosound
+protocol unix
 seccomp
+shell none
 tracelog
+
+private-dev
+private-bin xviewer
+private-tmp

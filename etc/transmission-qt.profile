@@ -1,4 +1,4 @@
-# transmission-qt profile
+# transmission-qt bittorrent profile
 noblacklist ${HOME}/.config/transmission
 noblacklist ${HOME}/.cache/transmission
 
@@ -14,4 +14,9 @@ noroot
 nosound
 protocol unix,inet,inet6
 seccomp
+shell none
 tracelog
+
+private-bin transmission-qt
+private-dev
+private-tmp

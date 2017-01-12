@@ -6,6 +6,9 @@
 export MALLOC_CHECK_=3
 export MALLOC_PERTURB_=$(($RANDOM % 255 + 1))
 
+echo "TESTING: audit (test/utils/audit.exp)"
+./audit.exp
+
 echo "TESTING: version (test/utils/version.exp)"
 ./version.exp
 
@@ -71,6 +74,9 @@ echo "TESTING: join2 (test/utils/join2.exp)"
 echo "TESTING: join3 (test/utils/join3.exp)"
 ./join3.exp
 
+echo "TESTING: join3 (test/utils/join4.exp)"
+./join4.exp
+
 echo "TESTING: join profile (test/utils/join-profile.exp)"
 ./join-profile.exp
 
@@ -79,12 +85,30 @@ rm -f index.html*
 ./trace.exp
 rm -f index.html*
 
-echo "TESTING: firemon --seccomp (test/utils/seccomp.exp)"
-./seccomp.exp
-
-echo "TESTING: firemon --caps (test/utils/caps.exp)"
-./caps.exp
+echo "TESTING: top (test/utils/top.exp)"
+./top.exp
 
 echo "TESTING: file transfer (test/utils/ls.exp)"
 ./ls.exp
+
+echo "TESTING: firemon seccomp (test/utils/firemon-seccomp.exp)"
+./firemon-seccomp.exp
+
+echo "TESTING: firemon caps (test/utils/firemon-caps.exp)"
+./firemon-caps.exp
+
+echo "TESTING: firemon cpu (test/utils/firemon-cpu.exp)"
+./firemon-cpu.exp
+
+echo "TESTING: firemon cgroup (test/utils/firemon-cgroup.exp)"
+./firemon-cgroup.exp
+
+echo "TESTING: firemon version (test/utils/firemon-version.exp)"
+./firemon-version.exp
+
+echo "TESTING: firemon interface (test/utils/firemon-interface.exp)"
+./firemon-interface.exp
+
+echo "TESTING: firemon name (test/utils/firemon-name.exp)"
+./firemon-name.exp
 

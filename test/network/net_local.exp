@@ -17,9 +17,9 @@ expect {
 	timeout {puts "TESTING ERROR 4\n";exit}
 	"Child process initialized"
 }
-sleep 2
+sleep 1
 send -- "exit\r"
-sleep 2
+sleep 1
 
 # check loopback
 send -- "firejail --noprofile\r"
@@ -43,6 +43,8 @@ expect {
 	timeout {puts "TESTING ERROR 7\n";exit}
 	"255.0.0.0"
 }
+send -- "exit\r"
+after 100
 
 puts "all done\n"
 

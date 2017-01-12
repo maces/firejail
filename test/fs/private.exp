@@ -7,53 +7,52 @@ set timeout 10
 spawn $env(SHELL)
 match_max 100000
 
-if { $argc != 1 } {
-	puts "TESTING ERROR: argument missing"
-	puts "Usage: private.exp username"
-	puts "where username is the name of the current user"
-	exit
+
+if {[file exists ~/.asoundrc]} {
+	puts "found .asoundrc file\n"
+} else {
+	send -- "touch ~/.asoundrc\r"
 }
+after 100
+
+if {[file exists ~/.Xauthority]} {
+	puts "found .Xauthority file\n"
+} else {
+	send -- "touch ~/.Xauthority\r"
+}
+after 100
 
 # testing profile and private
-send -- "firejail --private --profile=/etc/firejail/default.profile\r"
+send -- "firejail --private\r"
 expect {
 	timeout {puts "TESTING ERROR 0\n";exit}
 	"Child process initialized"
 }
 sleep 1
-send -- "exit\r"
-sleep 1
 
-send -- "firejail --private --noprofile\r"
+send -- "ls -l ~\r"
 expect {
 	timeout {puts "TESTING ERROR 1\n";exit}
-	"Child process initialized"
+	"total 0"
 }
+after 100
 
-sleep 1
-send -- "cd ~; ls -al; echo done\r"
+send -- "ls -al ~\r"
 expect {
 	timeout {puts "TESTING ERROR 2\n";exit}
-	".bashrc"
+	".asoundrc"
 }
 expect {
 	timeout {puts "TESTING ERROR 3\n";exit}
-	done
+	".bashrc"
 }
+expect {
+	timeout {puts "TESTING ERROR 4\n";exit}
+	".Xauthority"
+}
+after 100
 
-# owner /tmp
-send -- "stat -c %U%a /tmp;echo done\r"
-expect {
-	timeout {puts "TESTING ERROR 10\n";exit}
-	"root777" {puts "version 1\n";}
-            "root1777" {puts "version 2\n";}
-	"nobody777" {puts "version 3\n";}
-            "nobody1777" {puts "version 4\n";}
-}
-expect {
-	timeout {puts "TESTING ERROR 11\n";exit}
-	"done"
-}
+send -- "exit\r"
 sleep 1
 
 puts "all done\n"

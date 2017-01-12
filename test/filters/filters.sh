@@ -12,11 +12,24 @@ echo "TESTING: noroot (test/filters/noroot.exp)"
 echo "TESTING: capabilities (test/filters/caps.exp)"
 ./caps.exp
 
+echo "TESTING: capabilities print (test/filters/caps-print.exp)"
+./caps-print.exp
+
+rm -f seccomp-test-file
+if [ "$(uname -m)" = "x86_64" ]; then
+       echo "TESTING: fseccomp (test/filters/fseccomp.exp)"
+        ./fseccomp.exp
+else
+        echo "TESTING SKIP: fseccomp test implemented only for x86_64"
+fi
+rm -f seccomp-test-file
+
+
 if [ "$(uname -m)" = "x86_64" ]; then
         echo "TESTING: protocol (test/filters/protocol.exp)"
         ./protocol.exp
 else
-        echo "TESTING SKIP: protocol, not running on x86_64"
+        echo "TESTING SKIP: protocol, running only on x86_64"
 fi
 
 echo "TESTING: seccomp bad empty (test/filters/seccomp-bad-empty.exp)"
@@ -45,13 +58,10 @@ echo "TESTING: seccomp chmod - seccomp lists (test/filters/seccomp-chmod.exp)"
 echo "TESTING: seccomp chmod profile - seccomp lists (test/filters/seccomp-chmod-profile.exp)"
 ./seccomp-chmod-profile.exp
 
-# todo:  fix pwd and add seccomp-chown.exp and seccomp-umount.exp
+# todo:  fix pwd and add seccomp-chown.exp
 
 echo "TESTING: seccomp empty (test/filters/seccomp-empty.exp)"
 ./seccomp-empty.exp
-
-echo "TESTING: seccomp bad empty (test/filters/seccomp-bad-empty.exp)"
-./seccomp-bad-empty.exp
 
 if [ "$(uname -m)" = "x86_64" ]; then
         echo "TESTING: seccomp dual filter (test/filters/seccomp-dualfilter.exp)"

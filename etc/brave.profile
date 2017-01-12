@@ -1,5 +1,4 @@
 # Profile for Brave browser
-
 noblacklist ~/.config/brave
 include /etc/firejail/disable-common.inc
 include /etc/firejail/disable-programs.inc
@@ -14,6 +13,5 @@ seccomp
 
 whitelist ${DOWNLOADS}
 
-mkdir ~/.config
 mkdir ~/.config/brave
 whitelist ~/.config/brave

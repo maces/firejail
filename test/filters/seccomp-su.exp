@@ -30,11 +30,11 @@ expect {
 
 send -- "ping google.com\r"
 expect {
-	timeout {puts "TESTING ERROR 2\n";exit}
+	timeout {puts "TESTING ERROR 3\n";exit}
 	"Operation not permitted" {puts "OK\n"}
 	"unknown host" {puts "OK\n"}
 }
 
 send -- "exit\r"
-sleep 1
+after 100
 puts "all done\n"
